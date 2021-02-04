@@ -1,0 +1,157 @@
+#### 需要的三张表：	
+					picking_job ： 五分钟同步一次 ；
+					basic_agv ：十五分钟同步一次；
+					agv_status_info ： 需要五分钟同步一次。
+
+## picking_job 表
+
+#从阿里云服务器到HDFS脚本
+
+#!/bin/bash
+
+ /opt/module/sqoop/bin/sqoop import \
+--connect "jdbc:mysql://lanpi-rds.quicktron.com.cn:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username quicktron \
+--password kc87654321! \
+--table picking_job \
+--target-dir /evo_wds_base/picking_job \
+--delete-target-dir \
+--columns  id,warehouse_id,zone_code,job_id,job_type,state,agv_code,agv_type,priority,priority_type,picking_order_group_id,order_id,picking_work_id,picking_work_detail_id,sku_id,lot_id,pack_id,frozen,package_type,customer_code,level3_inventory_id,quantity,actual_quantity,qty_mismatch_reason,bucket_slot_code,bucket_code,bucket_waypoint_code,bucket_face_num,target_face_num,station_code,station_slot_code,station_waypoint_code,bucket_move_job_id,job_mode,created_app,created_date,updated_app,updated_date,order_type,order_group_type,warehouse_code,warehouse_name,project_num,project_name \
+--num-mappers 4 \
+--split-by id \
+--fields-terminated-by "\t"
+
+#从HDFS到本地服务器
+
+#!/bin/bash
+
+/opt/module/sqoop/bin/sqoop export \
+--connect "jdbc:mysql://172.31.236.82:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username root \
+--password 123456 \
+--table picking_job \
+--export-dir /evo_wds_base/picking_job \
+--m 4 \
+--input-fields-terminated-by "\t" \
+--update-mode allowinsert \
+--update-key id 
+
+
+## agv_status_info 表	
+
+#从阿里云服务器到HDFS脚本
+
+#!/bin/bash
+
+ /opt/module/sqoop/bin/sqoop import \
+--connect "jdbc:mysql://lanpi-rds.quicktron.com.cn:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username quicktron \
+--password kc87654321! \
+--table agv_status_info \
+--target-dir /evo_wds_base/agv_status_info \
+--delete-target-dir \
+--columns  id,agv_num,online_status,agv_status,project_name,project_num,gmt_create,gmt_modified \
+--num-mappers 4 \
+--split-by id \
+--fields-terminated-by "\t"
+
+
+
+#从HDFS到本地服务器
+
+#!/bin/bash
+
+/opt/module/sqoop/bin/sqoop export \
+--connect "jdbc:mysql://172.31.236.82:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username root \
+--password 123456 \
+--table agv_status_info \
+--export-dir /evo_wds_base/agv_status_info \
+--m 4 \
+--input-fields-terminated-by "\t" \
+--update-mode allowinsert \
+--update-key id
+
+
+
+
+##### 这个表变化的数值极低，只有在新项目或者新机型上线的时候才会更新数据，所以不做自动调度处理。
+## basic_agv 表
+
+#从阿里云服务器到HDFS脚本
+
+#!/bin/bash
+
+ /opt/module/sqoop/bin/sqoop import \
+--connect "jdbc:mysql://lanpi-rds.quicktron.com.cn:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username quicktron \
+--password kc87654321! \
+--table basic_agv \
+--target-dir /evo_wds_base/basic_agv \
+--delete-target-dir \
+--columns  id,agv_code,warehouse_id,zone_id,operation_scope_id,agv_type_id,agv_appearance_id,agv_frame_code,drive_unit_version,ip,dsp_version,battery_version,radar_version,camera_version,os,state,created_time,created_user,created_app,last_updated_time,last_updated_user,last_updated_app,warehouse_code,warehouse_name,agv_type_code,project_num,project_name \
+--num-mappers 4 \
+--split-by id \
+--fields-terminated-by "\t"
+
+#从HDFS到本地服务器
+
+#!/bin/bash
+
+/opt/module/sqoop/bin/sqoop export \
+--connect "jdbc:mysql://172.31.236.82:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username root \
+--password 123456 \
+--table basic_agv \
+--export-dir /evo_wds_base/basic_agv \
+--m 4 \
+--input-fields-terminated-by "\t" \
+--update-mode allowinsert \
+--update-key id
+
+
+
+## picking_job_bi 表
+
+#从阿里云服务器到HDFS脚本
+
+#!/bin/bash
+
+ /opt/module/sqoop/bin/sqoop import \
+--connect "jdbc:mysql://lanpi-rds.quicktron.com.cn:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username quicktron \
+--password kc87654321! \
+--table picking_job_bi \
+--target-dir /evo_wds_base/picking_job_bi \
+--delete-target-dir \
+--columns  id,project_num,project_name,job_id,agv_code,state,created_date,updated_date \
+--num-mappers 4 \
+--split-by id \
+--fields-terminated-by "\t"
+
+#从HDFS到本地服务器
+
+#!/bin/bash
+
+/opt/module/sqoop/bin/sqoop export \
+--connect "jdbc:mysql://172.31.236.82:3306/evo_wds_base?useUnicode=true&characterEncoding=utf-8" \
+--username root \
+--password 123456 \
+--table picking_job_bi \
+--export-dir /evo_wds_base/picking_job_bi \
+--m 4 \
+--input-fields-terminated-by "\t" \
+--update-mode allowinsert \
+--update-key id 
+
+
+
+
+
+
+
+
+
+
+
+
