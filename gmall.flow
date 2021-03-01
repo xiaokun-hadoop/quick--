@@ -1,0 +1,12 @@
+nodes: 
+  - name: picking_job_bi_data
+    type: command
+    config:
+     command: /root/bin/picking_job_bi_data.sh
+     
+  - name: picking_job_status
+    type: command
+    dependsOn: 
+     - picking_job_bi_data
+    config: 
+     command: /root/bin/picking_job_status.sh
